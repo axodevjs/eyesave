@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Eye Save</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+	<div id="close-eyes">
+		<div class="eye">
+			<svg width="180" height="180" class="svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M123.999 63.945C126.764 67.5617 126.764 72.4442 123.999 76.055C115.29 87.4242 94.395 110.833 70 110.833C45.605 110.833 24.71 87.4242 16.0008 76.055C14.6556 74.3233 13.9253 72.1929 13.9253 70C13.9253 67.8072 14.6556 65.6767 16.0008 63.945C24.71 52.5758 45.605 29.1667 70 29.1667C94.395 29.1667 115.29 52.5758 123.999 63.945V63.945Z" fill="white" stroke="#202020" stroke-width="16.6667" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M70 87.5C79.665 87.5 87.5 79.665 87.5 70C87.5 60.335 79.665 52.5 70 52.5C60.335 52.5 52.5 60.335 52.5 70C52.5 79.665 60.335 87.5 70 87.5Z" fill="white" stroke="#202020" stroke-width="16.6667" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</div>
+
+		<div class="title" id="title">
+			Зажмуривание
+		</div>
+
+		<div class="description">
+			Сядьте на стул и зажмурьтесь. Разомкните веки. Повторите упражнение 8 раз с интервалом в 5-10 секунд
+		</div>
+
+		<div class="button-box">
+			<button class="btn" id="start">Начать</button>
+			<button class="btn" id="pause">Пауза</button>
+			<button class="btn" id="resume">Возобновить</button>
+			<button class="btn" id="restart">Начать заново</button>
+		</div>
+	</div>
+
+	<style type="text/css">
+		.button-box {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+		}
+
+		.btn {
+			background: #FFFFFF;
+			border: 1px solid #202020;
+			padding: 10px 90px 10px 90px;
+			color: #202020;
+			outline: none;
+			font-size: 18px;
+		}
+
+		.btn:hover {
+			transition: 0.5s;
+			background: #202020;
+			transition: 0.5s;
+			color: #ffffff;
+		}
+
+		.description {
+			font-weight: 400;
+			font-size: 18px;
+			margin-top: 15px;
+			margin: auto;
+			text-align: center;
+			max-width: 65%;
+			padding: 20px 0 40px 0;
+		}
+
+
+		* {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		.eye {
+			width: 100%;
+			padding-top: 5%;
+			display: flex;
+			justify-content: center;
+		}
+
+		.eye svg {
+			width: auto;
+			display: flex;
+		}
+
+		.title {
+			font-weight: 500;
+			font-size: 38px;
+			text-align: center;
+
+		}
+	</style>
+
+  	<script>
+  		var level = 1;
+  		var timer;
+
+  		// default hiding
+  		$('#pause').hide();
+  		$('#resume').hide();
+  		$('#restart').hide();
+
+  		// start timer
+  		function startTimer(seconds, container, oncomplete) {
+	    var startTime, timer, obj, ms = seconds*1000,
+	        display = document.getElementById(container);
+		    obj = {};
+		    obj.resume = function() {
+		        startTime = new Date().getTime();
+		        timer = setInterval(obj.step,250); // adjust this number to affect granularity
+		                            // lower numbers are more accurate, but more CPU-expensive
+		    };
+		    obj.pause = function() {
+		        ms = obj.step();
+		        clearInterval(timer);
+		    };
+		    obj.step = function() {
+		        var now = Math.max(0,ms-(new Date().getTime()-startTime)),
+		            m = Math.floor(now/60000), s = Math.floor(now/1000)%60;
+		        s = (s < 10 ? "0" : "")+s;
+		        display.innerHTML = m+":"+s;
+		        if( now == 0) {
+		            clearInterval(timer);
+		            obj.resume = function() {};
+		            if( oncomplete) oncomplete();
+		        }
+		        return now;
+		    };
+		    obj.resume();
+		    return obj;
+		}
+
+		//levelfunc
+		function levelfunc(level) {
+			if (level === 1) {
+				$('.title').text('Зажмуривание');
+				$('.description').text('Сядьте на стул и зажмурьтесь. Разомкните веки. Повторите упражнение 8 раз с интервалом в 5-10 секунд.');
+			}
+
+			if (level === 2) {
+				$('.title').text('Моргание');
+				$('.description').text('Быстро моргать в течении 1-2 минут. Это упражнение направлено на улучшение  кровоснабжения.');
+			}
+
+			if (level === 3) {
+				$('.title').text('Массаж');
+				$('.description').text('Тремя пальцами каждой руки легко нажмите на верхние веки, через 1-2 секунды снимите пальцы с век. Повторите 3 раза. Улучшает циркуляцию внутриглазной жидкости.');
+			}
+
+			if (level === 4) {
+				$('.title').text('Перемещение взгляда');
+				$('.description').text('Стоя, смотрите сначала влево, а потом вправо. Перемещайте взгляд снизу вверх. Простейшие действия тренируют мышцы глаз. Выполняя их регулярно, можно предупредить снижение остроты зрения.');
+			}
+
+			if (level === 5) {
+				$('.title').text('Молодец! На этом пока что всё.');
+				$('.description').text('');
+
+				$('#start').hide();
+				$('#restart').show();
+
+				// Сброс уровня
+				level = 1;
+			}
+		}
+
+		// On click a start btn
+  		$('#start').click(function(e) {
+  			timer = startTimer(10, "title", function() {
+  				// При завершении времени
+  				$("#pause").hide();
+  				$("#start").show();
+
+  				// Переход на следующее упражнение
+  				level++;
+
+  				// Смена упражнения
+  				levelfunc(level);
+  			});
+
+  			$("#start").hide();
+  			$("#pause").show();
+  			
+  		});
+
+  		// При нажатии на паузу
+  		$('#pause').click(function(e) {
+  			timer.pause();
+  			$("#pause").hide();
+  			$("#resume").show();
+  		});
+
+  		// При нажатии на возобновление
+  		$('#resume').click(function(e) {
+  			timer.resume();
+  			$("#resume").hide();
+  			$("#pause").show();
+  		})
+
+  		// При нажатии на restart
+  		$('#restart').click(function(e) {
+  			levelfunc(level);
+  			$("#restart").hide();
+  			$("#start").show();
+  		})
+  	</script>
+</body>
+</html>
