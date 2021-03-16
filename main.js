@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Tray, Menu, Notification } = require('electron')
 var AutoLaunch = require('auto-launch');
-var iconpath = './web/icon.png';
+var iconpath = __dirname + '/web/icon.png';
 
 function showNotification () {
   const notification = {
@@ -46,12 +46,6 @@ function createWindow () {
       }
     }
   ]));
-
-  // Напоминание
-  showNotification(); //Make sure the function fires as soon as the page is loaded
-
-  // Каждые 30 мин
-  setTimeout(showNotification, 1800000);
 }
 
 app.whenReady().then(createWindow)
@@ -62,19 +56,31 @@ app.on('window-all-closed', () => {
   }
 })
 
+app.on('ready', () => {
+  if (process.platform === 'win64' || process.platform === 'win32') {
+      app.setAppUserModelId("com.ikobit.desktop-notifications");
+      // Напоминание
+      showNotification(); //Make sure the function fires as soon as the page is loaded
+
+      // Каждые 30 мин
+      setTimeout(showNotification, 1800000);
+  }
+});
+
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
 })
 
-// var autoLauncher = new AutoLaunch({
-//     name: "Eye Save"
-// });
-// // Checking if autoLaunch is enabled, if not then enabling it.
-// autoLauncher.isEnabled().then(function(isEnabled) {
-//   if (isEnabled) return;
-//    autoLauncher.enable();
-// }).catch(function (err) {
-//   throw err;
-// });
+var autoLauncher = new AutoLaunch({
+    name: "Eye Save",
+    path: app.getPath('exe'),
+});
+// Checking if autoLaunch is enabled, if not then enabling it.
+autoLauncher.isEnabled().then(function(isEnabled) {
+  if (isEnabled) return;
+   autoLauncher.enable();
+}).catch(function (err) {
+  throw err;
+});
